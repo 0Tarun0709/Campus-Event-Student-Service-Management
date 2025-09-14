@@ -1,0 +1,23 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+uv.lock
+pyproject.toml
+New-ways
+mcp-server.py
+.vscode
+NEW-TOOLS-MCP-FASTMCP
+# CI-*
+Assign*
+.python-version
+mangsys.py
+*.ipynb
+console_app_new.py 
+console_app.py
