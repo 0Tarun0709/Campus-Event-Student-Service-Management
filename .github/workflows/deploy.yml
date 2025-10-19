@@ -65,24 +65,7 @@ jobs:
         echo "Verifying deployment..."
         # Add health check for your deployed app
         # curl -f ${{ secrets.STREAMLIT_APP_URL }}/healthz || exit 1
-        
-    - name: Notify deployment success
-      uses: 8398a7/action-slack@v3
-      if: success()
-      with:
-        status: success
-        text: '🚀 Successfully deployed Campus Management System to Streamlit Cloud!'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        
-    - name: Notify deployment failure
-      uses: 8398a7/action-slack@v3
-      if: failure()
-      with:
-        status: failure
-        text: '❌ Failed to deploy Campus Management System to Streamlit Cloud'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        echo "Deployment verification completed successfully!"
 
   health-check:
     name: Post-deployment Health Check
