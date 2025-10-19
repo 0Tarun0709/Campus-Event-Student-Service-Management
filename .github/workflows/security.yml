@@ -83,7 +83,7 @@ jobs:
     name: Dependency Review
     runs-on: ubuntu-latest
     # Run only for pull requests on public repos (Dependency Review requires GitHub Advanced Security for private repos)
-    if: github.event_name == 'pull_request' && github.event.repository.private == false
+    if: ${{ github.event_name == 'pull_request' && github.event.repository.private == false }}
     
     steps:
     - name: Checkout Repository
