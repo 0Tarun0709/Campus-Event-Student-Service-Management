@@ -228,11 +228,10 @@ The application includes a health check endpoint accessible at `/healthz` that m
 
 #### Local Development Issues
 
-1. **Import Errors**
-   ```bash
-   pip install -r requirements.txt
-   pip install -r requirements-dev.txt
-   ```
+1. **Import Errors**n```bash
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
 
 2. **Pre-commit Hook Failures**
    ```bash
@@ -270,8 +269,7 @@ Performance benchmarks are automatically run in CI/CD:
 
 ### Security Measures
 
-1. **Static Analysis**
-   - Bandit security linting
+1. **Static Analysis**n   - Bandit security linting
    - Safety vulnerability checking
    - CodeQL analysis
 
