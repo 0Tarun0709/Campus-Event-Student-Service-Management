@@ -1,6 +1,7 @@
+from datetime import datetime
+
 import pandas as pd
 import streamlit as st
-from datetime import datetime
 
 from models import RegistrationStatus, RequestStatus
 
