@@ -190,7 +190,9 @@ graph TB
 
 2. **Install Dependencies**
    ```bash
-   pip install -r requirements.txt
+   uv pip install -r requirements.txt
+   # or
+   uv synv
    ```
 
 3. **Running the Applications**
