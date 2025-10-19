@@ -1,20 +1,29 @@
 from datetime import datetime
 from typing import Dict, List, Optional
-from models import Event, Student, Registration, ServiceRequest, RegistrationStatus, RequestStatus
+
+from models import (
+    Event,
+    Registration,
+    RegistrationStatus,
+    RequestStatus,
+    ServiceRequest,
+    Student,
+)
+
 
 class CampusEventManagementSystem:
     """
     A comprehensive system for managing campus events, student registrations, and service requests.
-    
+
     This class serves as the main controller for the entire campus event management system,
     handling event creation, student registration, conflict detection, and service requests.
-    
+
     Attributes:
         events (Dict[str, Event]): Dictionary storing all events, keyed by event_id
         students (Dict[str, Student]): Dictionary storing all students, keyed by student_id
         service_requests (Dict[str, ServiceRequest]): Dictionary storing all service requests, keyed by request_id
     """
-    
+
     def __init__(self):
         """
         Initialize the CampusEventManagementSystem with empty storage for events, students, and service requests.
@@ -23,8 +32,17 @@ class CampusEventManagementSystem:
         self.students: Dict[str, Student] = {}
         self.service_requests: Dict[str, ServiceRequest] = {}
 
-    def add_event(self, event_id: str, title: str, club: str, date: str, 
-                  start_time: str, end_time: str, venue: str, max_seats: int) -> Event:
+    def add_event(
+        self,
+        event_id: str,
+        title: str,
+        club: str,
+        date: str,
+        start_time: str,
+        end_time: str,
+        venue: str,
+        max_seats: int,
+    ) -> Event:
         """
         Add a new event to the system with automatic conflict detection.
 
@@ -49,16 +67,16 @@ class CampusEventManagementSystem:
             - Conflicts can be either time-based, venue-based, or both
             - The first registered event in a conflict always remains valid
         """
-        new_event = Event(event_id, title, club, date, start_time, end_time, venue, max_seats)
-        
+        new_event = Event(
+            event_id, title, club, date, start_time, end_time, venue, max_seats
+        )
 
         ordered_events = sorted(self.events.values(), key=lambda x: x.created_at)
-        
 
         for existing_event in ordered_events:
             conflict_details = existing_event.get_conflict_details(new_event)
             if conflict_details["has_conflict"]:
-                if existing_event.is_valid:  
+                if existing_event.is_valid:
                     new_event.is_valid = False
                     conflict_desc = []
                     if conflict_details["time_conflict"]:
@@ -74,15 +92,15 @@ class CampusEventManagementSystem:
                                 f"on {period['date']} between {period['start']} and {period['end']}"
                             )
                     new_event.violations.append(
-                        f"Conflicts with {existing_event.title} ({existing_event.event_id}) which was registered first: " +
-                        " - ".join(conflict_desc)
+                        f"Conflicts with {existing_event.title} ({existing_event.event_id}) which was registered first: "
+                        + " - ".join(conflict_desc)
                     )
-                    break  
+                    break
 
         self.events[event_id] = new_event
         return new_event
 
-    def add_student(self, student_id: str, student_name: str="") -> Student:
+    def add_student(self, student_id: str, student_name: str = "") -> Student:
         """
         Add a new student to the system or retrieve existing student.
 
@@ -98,10 +116,12 @@ class CampusEventManagementSystem:
             instead of creating a new one.
         """
         if student_id not in self.students:
-            self.students[student_id] = Student(student_id,student_name)
+            self.students[student_id] = Student(student_id, student_name)
         return self.students[student_id]
 
-    def register_for_event(self, student_id: str, event_id: str) -> Optional[Registration]:
+    def register_for_event(
+        self, student_id: str, event_id: str
+    ) -> Optional[Registration]:
         """
         Register a student for an event with automatic waitlist handling.
 
@@ -127,25 +147,29 @@ class CampusEventManagementSystem:
         event = self.events[event_id]
         student = self.students[student_id]
 
-
         for reg in event.registrations:
             if reg.student.student_id == student_id:
                 return reg
 
         registration = Registration(student, event)
-        
+
         # Check if seats are available
-        confirmed_seats = sum(1 for reg in event.registrations 
-                            if reg.status == RegistrationStatus.CONFIRMED)
-        
+        confirmed_seats = sum(
+            1
+            for reg in event.registrations
+            if reg.status == RegistrationStatus.CONFIRMED
+        )
+
         if confirmed_seats < event.max_seats:
             registration.status = RegistrationStatus.CONFIRMED
-        
+
         event.registrations.append(registration)
         student.registrations.append(registration)
         return registration
 
-    def raise_service_request(self, request_id: str, student_id: str, category: str) -> Optional[ServiceRequest]:
+    def raise_service_request(
+        self, request_id: str, student_id: str, category: str
+    ) -> Optional[ServiceRequest]:
         """
         Create a new service request for a student.
 
@@ -170,8 +194,9 @@ class CampusEventManagementSystem:
         self.service_requests[request_id] = request
         student.service_requests.append(request)
         return request
+
     # def get_event_status(self):
-        
+
     def get_event_summary(self, event_id: str) -> Optional[Dict]:
         """
         Get a detailed summary of an event's status and registration information.
@@ -198,7 +223,9 @@ class CampusEventManagementSystem:
             return None
         return self.events[event_id].get_summary()
 
-    def update_service_request_status(self, request_id: str, new_status: RequestStatus) -> bool:
+    def update_service_request_status(
+        self, request_id: str, new_status: RequestStatus
+    ) -> bool:
         """
         Update the status of an existing service request.
 
@@ -236,7 +263,7 @@ class CampusEventManagementSystem:
         for request in self.service_requests.values():
             summary[request.status.value] += 1
         return summary
-    
+
     def display_events_summary(self, events):
         """
         Display a comprehensive summary of all events including conflicts and validity status.
@@ -257,36 +284,36 @@ class CampusEventManagementSystem:
         """
         print("\nEVENTS SUMMARY")
         print("=" * 50)
-        
+
         total_events = len(events)
         # valid_events = sum(1 for event in events[event] if event.is_valid)
-        valid_events=0
+        valid_events = 0
         # events=system.events
         for event in events:
 
             if events[event].is_valid:
-                valid_events=valid_events+1
-                
+                valid_events = valid_events + 1
+
         print(valid_events)
         invalid_events = total_events - valid_events
-        
+
         events_with_conflicts = set()
         conflict_pairs = []
-        
+
         for i, event1 in enumerate(events):
             for event2 in events:
                 if events[event1].has_conflict_with(events[event2]):
-                    
+
                     events_with_conflicts.add(events[event1])
                     events_with_conflicts.add(events[event2])
                     conflict_pairs.append((events[event1], events[event2]))
-        
+
         print(f"\nTotal Events: {total_events}")
         print(f"Valid Events: {valid_events}")
         print(f"Invalid Events: {invalid_events}")
         print(f"Events with Conflicts: {len(events_with_conflicts)}")
         print(f"Total Conflict Pairs: {len(conflict_pairs)}")
-        
+
         # if conflict_pairs:
         #     print("\nConflict Details:")
         #     for events[event1], events[event2] in conflict_pairs:
@@ -305,12 +332,8 @@ class CampusEventManagementSystem:
         #     if events[event].venue not in venues:
         #         venues[events[event].venue] = []
         #     venues[events[event].venue].append(events[event])
-        
-        
+
         # for venue, venue_events in venues.items():
         #     print(f"\n{venue}:")
         #     for event in venue_events:
         #         print(f"- {event.title} ({event.date} {event.start_time} - {event.end_time})")
-
-    
-    

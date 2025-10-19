@@ -1,5 +1,6 @@
 from main import CampusEventManagementSystem
 
+
 def main():
     # Initialize the system
     system = CampusEventManagementSystem()
@@ -19,7 +20,7 @@ def main():
             "start_time": "10:00 AM",
             "end_time": "12:00 PM",
             "venue": "Seminar Hall",
-            "max_seats": 50
+            "max_seats": 50,
         },
         {
             "event_id": "E102",
@@ -29,7 +30,7 @@ def main():
             "start_time": "11:00 AM",
             "end_time": "12:30 PM",
             "venue": "Seminar Hall",
-            "max_seats": 30
+            "max_seats": 30,
         },
         {
             "event_id": "E103",
@@ -39,8 +40,8 @@ def main():
             "start_time": "2:00 PM",
             "end_time": "5:00 PM",
             "venue": "Computer Lab",
-            "max_seats": 40
-        }
+            "max_seats": 40,
+        },
     ]
 
     # Add events to system
@@ -54,7 +55,7 @@ def main():
         ("S03", "E101"),
         ("S04", "E102"),
         ("S05", "E103"),
-        ("S06", "E103")
+        ("S06", "E103"),
     ]
 
     for student_id, event_id in registrations:
@@ -64,7 +65,7 @@ def main():
     service_requests = [
         ("R001", "S01", "Hostel Maintenance"),
         ("R002", "S02", "Library Access"),
-        ("R003", "S03", "Counseling Appointment")
+        ("R003", "S03", "Counseling Appointment"),
     ]
 
     for request_id, student_id, category in service_requests:
@@ -75,11 +76,13 @@ def main():
     for event_id in ["E101", "E102", "E103"]:
         summary = system.get_event_summary(event_id)
         print(f"\nEvent Summary for {summary['title']} ({summary['event_id']}):")
-        print(f"Seats: {summary['seats']['max']} | "
-              f"Registrations: {summary['seats']['confirmed']} Confirmed, "
-              f"{summary['seats']['waitlisted']} Waitlisted")
+        print(
+            f"Seats: {summary['seats']['max']} | "
+            f"Registrations: {summary['seats']['confirmed']} Confirmed, "
+            f"{summary['seats']['waitlisted']} Waitlisted"
+        )
         print(f"Venue: {summary['venue']}")
-        if summary['violations']:
+        if summary["violations"]:
             print(f"Violations: {', '.join(summary['violations'])}")
         else:
             print("Violations: None")
@@ -91,6 +94,7 @@ def main():
     for status, count in request_summary.items():
         if count > 0:
             print(f"{status}: {count}")
+
 
 if __name__ == "__main__":
     main()

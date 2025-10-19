@@ -1,0 +1,78 @@
+name: Performance Testing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 4 * * 2'  # Weekly on Tuesday at 4 AM
+
+jobs:
+  performance-test:
+    name: Performance Testing
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip uv
+        uv pip install -e ".[performance,test]"
+        
+    - name: Run performance benchmarks
+      run: |
+        pytest tests/ -v --benchmark-only --benchmark-json=benchmark-results.json || true
+        
+    - name: Memory profiling
+      run: |
+        python -m memory_profiler app.py > memory-profile.txt || true
+        
+    - name: Upload performance results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: performance-results
+        path: |
+          benchmark-results.json
+          memory-profile.txt
+          
+    - name: Comment PR with performance results
+      uses: actions/github-script@v6
+      if: github.event_name == 'pull_request'
+      with:
+        script: |
+          const fs = require('fs');
+          
+          let comment = '## 🚀 Performance Test Results\n\n';
+          
+          try {
+            const benchmark = JSON.parse(fs.readFileSync('benchmark-results.json', 'utf8'));
+            comment += '### Benchmark Results\n';
+            comment += '| Test | Mean Time | Std Dev |\n';
+            comment += '|------|-----------|----------|\n';
+            
+            if (benchmark.benchmarks) {
+              benchmark.benchmarks.forEach(test => {
+                comment += `| ${test.name} | ${test.stats.mean.toFixed(4)}s | ${test.stats.stddev.toFixed(4)}s |\n`;
+              });
+            }
+          } catch (e) {
+            comment += 'No benchmark results available.\n';
+          }
+          
+          comment += '\n📊 Full performance report available in artifacts.';
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
