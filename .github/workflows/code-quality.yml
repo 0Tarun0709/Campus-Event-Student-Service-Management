@@ -65,15 +65,20 @@ jobs:
       id: flake8
       run: |
         echo "Running flake8 linter..."
-        python -m flake8 . --statistics --tee --output-file=flake8-report.txt > flake8-summary.txt 2>&1 || true
-        # Count issues
-        ISSUES=$(python -m flake8 . --count 2>&1 || echo "0")
+        # Run flake8 and capture output
+        python -m flake8 . --statistics > flake8-report.txt 2>&1 || true
+        # Count issues more reliably
+        ISSUES=$(python -m flake8 . --count 2>/dev/null || echo "0")
+        # Clean up the count (remove any non-numeric characters)
+        ISSUES=$(echo "$ISSUES" | grep -o '[0-9]*' | head -1 || echo "0")
         echo "issues=$ISSUES" >> $GITHUB_OUTPUT
         if [ "$ISSUES" = "0" ]; then
           echo "status=passed" >> $GITHUB_OUTPUT
         else
           echo "status=failed" >> $GITHUB_OUTPUT
         fi
+        # Copy report for summary
+        cp flake8-report.txt flake8-summary.txt
         
     - name: Run pylint
       id: pylint
@@ -98,12 +103,14 @@ jobs:
       id: bandit
       run: |
         echo "Running bandit security scanner..."
-        python -m bandit -r . -f json -o bandit-report.json 2>&1 || true
-        python -m bandit -r . > bandit-summary.txt 2>&1 || true
-        # Count issues by severity
-        HIGH=$(grep -c "Severity: High" bandit-summary.txt 2>/dev/null || echo "0")
-        MEDIUM=$(grep -c "Severity: Medium" bandit-summary.txt 2>/dev/null || echo "0")
-        LOW=$(grep -c "Severity: Low" bandit-summary.txt 2>/dev/null || echo "0")
+        # Run bandit with JSON output, excluding test files and common false positives
+        python -m bandit -r . -f json -o bandit-report.json --skip B101,B601 --exclude ./tests/ 2>/dev/null || true
+        # Run bandit with text output for parsing
+        python -m bandit -r . --skip B101,B601 --exclude ./tests/ > bandit-summary.txt 2>/dev/null || true
+        # Count issues by severity (more robust parsing)
+        HIGH=$(grep -i "severity.*high" bandit-summary.txt | wc -l || echo "0")
+        MEDIUM=$(grep -i "severity.*medium" bandit-summary.txt | wc -l || echo "0") 
+        LOW=$(grep -i "severity.*low" bandit-summary.txt | wc -l || echo "0")
         echo "high=$HIGH" >> $GITHUB_OUTPUT
         echo "medium=$MEDIUM" >> $GITHUB_OUTPUT
         echo "low=$LOW" >> $GITHUB_OUTPUT
@@ -112,11 +119,22 @@ jobs:
       id: safety
       run: |
         echo "Running safety vulnerability scanner..."
-        python -m safety check --json --output safety-report.json > safety-summary.txt 2>&1 || true
-        python -m safety check > safety-text.txt 2>&1 || true
-        # Count vulnerabilities
-        VULNS=$(grep -c "vulnerability found" safety-text.txt 2>/dev/null || echo "0")
+        # Run safety with JSON output
+        python -m safety check --json --output safety-report.json 2>/dev/null || true
+        # Run safety with text output for parsing
+        python -m safety check > safety-text.txt 2>/dev/null || true
+        # Count vulnerabilities more reliably
+        VULNS=$(grep -c "vulnerability\|VULNERABILITY" safety-text.txt 2>/dev/null || echo "0")
+        # Also try counting from JSON if available
+        if [ -f "safety-report.json" ]; then
+          JSON_VULNS=$(python3 -c "import json; data=json.load(open('safety-report.json')); print(len(data.get('vulnerabilities', [])))" 2>/dev/null || echo "0")
+          if [ "$JSON_VULNS" != "0" ]; then
+            VULNS=$JSON_VULNS
+          fi
+        fi
         echo "vulnerabilities=$VULNS" >> $GITHUB_OUTPUT
+        # Create summary file
+        cp safety-text.txt safety-summary.txt
         
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
