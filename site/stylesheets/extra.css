@@ -1,0 +1,136 @@
+:root {
+  --md-primary-fg-color: #1976d2;
+  --md-primary-fg-color--light: #42a5f5;
+  --md-primary-fg-color--dark: #0d47a1;
+  --md-accent-fg-color: #3f51b5;
+}
+
+/* Custom styles for the campus management theme */
+.md-header {
+  box-shadow: 0 0 0.2rem rgba(0,0,0,.1), 0 0.2rem 0.4rem rgba(0,0,0,.2);
+}
+
+/* Code block enhancements */
+.md-typeset .highlight {
+  margin: 1em 0;
+  border-radius: 0.3rem;
+}
+
+/* Admonition custom styles */
+.md-typeset .admonition.tip {
+  border-color: #00bcd4;
+}
+
+.md-typeset .admonition.tip > .admonition-title {
+  background-color: rgba(0, 188, 212, 0.1);
+  border-color: #00bcd4;
+}
+
+/* Button enhancements */
+.md-button {
+  border-radius: 0.3rem;
+  transition: all 0.2s ease;
+}
+
+.md-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Navigation enhancements */
+.md-nav__item .md-nav__link--active {
+  font-weight: 600;
+}
+
+/* Custom homepage styling */
+.homepage-hero {
+  text-align: center;
+  padding: 2rem 0;
+  background: linear-gradient(135deg, var(--md-primary-fg-color--light), var(--md-primary-fg-color));
+  color: white;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.homepage-hero h1 {
+  margin: 0 0 1rem 0;
+  font-size: 2.5rem;
+}
+
+.homepage-hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* Feature grid */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.feature-card {
+  padding: 1.5rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: var(--md-primary-fg-color--light);
+}
+
+.feature-card h3 {
+  color: var(--md-primary-fg-color);
+  margin-top: 0;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.completed {
+  background-color: #4caf50;
+  color: white;
+}
+
+.status-badge.in-progress {
+  background-color: #ff9800;
+  color: white;
+}
+
+.status-badge.planned {
+  background-color: #9e9e9e;
+  color: white;
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+  .homepage-hero h1 {
+    font-size: 2rem;
+  }
+  
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark mode adjustments */
+[data-md-color-scheme="slate"] {
+  .feature-card {
+    background-color: var(--md-code-bg-color);
+  }
+  
+  .homepage-hero {
+    background: linear-gradient(135deg, var(--md-primary-fg-color--dark), var(--md-primary-fg-color));
+  }
+}

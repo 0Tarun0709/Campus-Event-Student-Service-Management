@@ -1,0 +1,288 @@
+[project]
+name = "campus-event-management"
+version = "0.1.0"
+description = "Campus Event & Student Service Management System"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Tarun", email = "mushamsaitarun328@gmail.com"}
+]
+maintainers = [
+    {name = "Tarun", email = "mushamsaitarun328@gmail.com"}
+]
+keywords = ["streamlit", "campus-management", "events", "students"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Education",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.11"
+dependencies = [
+    # Core web framework
+    "streamlit>=1.50.0",
+    # Data handling and visualization
+    "pandas>=2.3.3",
+    "plotly>=6.3.1", 
+    # System monitoring (for health checks)
+    "psutil>=5.9.0",
+    # Additional utilities
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    # Testing frameworks
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-html>=3.2.0",
+    "pytest-xdist>=3.3.1",
+    "pytest-benchmark>=4.0.0",
+    "coverage>=7.2.0",
+    # Code quality and formatting
+    "black>=23.7.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.5.0",
+    "pylint>=2.17.0",
+    # Security tools
+    "bandit>=1.7.5",
+    "safety>=2.3.4",
+    # Development tools
+    "pre-commit>=3.3.0",
+    "memory-profiler>=0.60.0",
+]
+test = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-html>=3.2.0",
+    "pytest-xdist>=3.3.1",
+    "pytest-benchmark>=4.0.0",
+    "coverage>=7.2.0",
+]
+lint = [
+    "black>=23.7.0",
+    "isort>=5.12.0", 
+    "flake8>=6.0.0",
+    "mypy>=1.5.0",
+    "pylint>=2.17.0",
+]
+security = [
+    "bandit>=1.7.5",
+    "safety>=2.3.4",
+]
+performance = [
+    "locust>=2.15.0",
+    "memory-profiler>=0.60.0",
+]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.4.0",
+    "mkdocs-mermaid2-plugin>=1.1.0",
+    "mkdocs-git-revision-date-localized-plugin>=1.2.0",
+    "mkdocs-awesome-pages-plugin>=2.9.0",
+    "pymdown-extensions>=10.3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/0Tarun0709/Campus-Event-Student-Service-Management"
+Repository = "https://github.com/0Tarun0709/Campus-Event-Student-Service-Management"
+Issues = "https://github.com/0Tarun0709/Campus-Event-Student-Service-Management/issues"
+Changelog = "https://github.com/0Tarun0709/Campus-Event-Student-Service-Management/blob/main/CHANGELOG.md"
+
+[project.scripts]
+campus-management = "app:main"
+
+[build-system]
+requires = ["hatchling>=1.21.0"]
+build-backend = "hatchling.build"
+
+[tool.black]
+line-length = 88
+target-version = ['py313']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["main", "models", "tabs", "data"]
+known_third_party = ["streamlit", "pandas", "plotly"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_functions = ["test_*"]
+python_classes = ["Test*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+filterwarnings = [
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/tests/*",
+    "*/venv/*",
+    "*/.venv/*", 
+    "*/env/*",
+    "*/.env/*",
+    "setup.py",
+    "*/migrations/*",
+    "*/__pycache__/*",
+    # Ignore files from .gitignore
+    "console_app.py",
+    "console_app_new.py", 
+    "mangsys.py",
+    "mcp-server.py",
+    "health_check.py",
+    "*.ipynb",
+    "*.pdf",
+    # Build and distribution
+    "build/*",
+    "dist/*",
+    "*.egg-info/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+ignore_missing_imports = true
+
+[tool.bandit]
+exclude_dirs = ["tests", "venv", ".venv"]
+skips = ["B101", "B601"]
+
+[tool.pylint.messages_control]
+disable = [
+    "C0103",  # Invalid name
+    "C0114",  # Missing module docstring
+    "C0115",  # Missing class docstring
+    "C0116",  # Missing function docstring
+    "R0903",  # Too few public methods
+    "R0913",  # Too many arguments
+]
+
+[tool.pylint.format]
+max-line-length = "88"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["S101", "D103"]
+
+[tool.ruff.isort]
+known-first-party = ["main", "models", "tabs", "data", "health_check"]
+
+[tool.hatch.version]
+path = "app.py"
+pattern = "__version__ = \"(?P<version>[^\"]+)\""
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "coverage[toml]>=7.2.0",
+]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = ["coverage report", "coverage html"]
+cov = ["test-cov", "cov-report"]
+
+[tool.hatch.envs.lint]
+dependencies = [
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.0.243",
+]
+
+[tool.hatch.envs.lint.scripts]
+typing = "mypy --install-types --non-interactive {args:.}"
+style = ["ruff {args:.}", "black --check --diff {args:.}"]
+fmt = ["black {args:.}", "ruff --fix {args:.}"]
+all = ["style", "typing"]
+
+[tool.hatch.envs.security]
+dependencies = [
+    "bandit>=1.7.5",
+    "safety>=2.3.4",
+]
+
+[tool.hatch.envs.security.scripts]
+scan = "bandit -r . -f json -o bandit-report.json"
+check = "safety check --json --output safety-report.json"
+all = ["scan", "check"]

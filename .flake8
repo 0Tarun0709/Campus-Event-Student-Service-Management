@@ -1,0 +1,38 @@
+[flake8]
+max-line-length = 88
+extend-ignore = E203, E266, E501, W503, F403, F401, F841, F601, E712
+max-complexity = 18
+select = B,C,E,F,W,T4,B9
+exclude = 
+    .git,
+    __pycache__,
+    docs/source/conf.py,
+    old,
+    build,
+    dist,
+    venv,
+    .venv,
+    env,
+    .env,
+    migrations,
+    *.pyc,
+    .tox,
+    .coverage,
+    .coverage.*,
+    .cache,
+    nosetests.xml,
+    coverage.xml,
+    *.cover,
+    *.log,
+    .mypy_cache,
+    # Ignored files from .gitignore
+    console_app.py,
+    console_app_new.py,
+    mangsys.py,
+    mcp-server.py,
+    health_check.py,
+    *.ipynb
+
+per-file-ignores =
+    __init__.py:F401
+    tests/*:S101,D103

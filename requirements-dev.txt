@@ -1,0 +1,18 @@
+# Development and CI/CD dependencies
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-html>=3.2.0
+pytest-xdist>=3.3.1
+pytest-benchmark>=4.0.0
+black>=23.7.0
+flake8>=6.0.0
+isort>=5.12.0
+mypy>=1.5.0
+pylint>=2.17.0
+bandit>=1.7.5
+safety>=2.3.4
+pre-commit>=3.3.0
+locust>=2.15.0
+memory-profiler>=0.60.0
+coverage>=7.2.0
+codecov>=2.1.13
