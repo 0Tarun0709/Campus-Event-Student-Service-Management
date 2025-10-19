@@ -1,6 +1,6 @@
 import streamlit as st
 
-from models import RegistrationStatus, RequestStatus
+from models import RequestStatus
 
 
 def manage_service_requests():

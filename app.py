@@ -1,5 +1,3 @@
-import os
-
 import streamlit as st
 
 from data.data import events, registrations, service_requests, students

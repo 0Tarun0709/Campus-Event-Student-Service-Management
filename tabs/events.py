@@ -3,7 +3,7 @@ from datetime import datetime
 import pandas as pd
 import streamlit as st
 
-from models import RegistrationStatus, RequestStatus
+from models import RegistrationStatus
 
 # Constants
 TIME_FORMAT = "%I:%M %p"

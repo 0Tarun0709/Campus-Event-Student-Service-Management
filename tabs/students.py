@@ -1,8 +1,7 @@
 import pandas as pd
-import plotly.express as px
 import streamlit as st
 
-from models import RegistrationStatus, RequestStatus
+from models import RegistrationStatus
 
 
 def manage_students():
