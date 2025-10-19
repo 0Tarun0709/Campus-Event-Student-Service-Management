@@ -8,6 +8,10 @@ from streamlit.testing.v1 import AppTest
 # Add the parent directory to the Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Increase AppTest timeout to allow the app to initialize in CI environments
+# Default is 3s which can be too short for slower CI runners
+TIMEOUT = 15
+
 
 class TestStreamlitApp:
     """Integration tests for the Streamlit application."""
@@ -19,12 +23,12 @@ class TestStreamlitApp:
 
     def test_app_initialization(self, app_test):
         """Test that the app initializes without errors."""
-        app_test.run()
+        app_test.run(timeout=TIMEOUT)
         assert not app_test.exception
 
     def test_tab_navigation(self, app_test):
         """Test tab navigation functionality."""
-        app_test.run()
+        app_test.run(timeout=TIMEOUT)
 
         # Check that tabs exist
         assert len(app_test.tabs) > 0
@@ -34,7 +38,7 @@ class TestStreamlitApp:
 
     def test_student_management_tab(self, app_test):
         """Test student management functionality."""
-        app_test.run()
+        app_test.run(timeout=TIMEOUT)
 
         # Check that the app has multiple tabs (including student management)
         assert len(app_test.tabs) >= 2
@@ -44,7 +48,7 @@ class TestStreamlitApp:
 
     def test_event_management_tab(self, app_test):
         """Test event management functionality."""
-        app_test.run()
+        app_test.run(timeout=TIMEOUT)
 
         # Check that the app has multiple tabs (including event management)
         assert len(app_test.tabs) >= 3
@@ -54,7 +58,7 @@ class TestStreamlitApp:
 
     def test_dashboard_displays_data(self, app_test):
         """Test that dashboard displays system data."""
-        app_test.run()
+        app_test.run(timeout=TIMEOUT)
 
         # Dashboard is the first tab (index 0), which should be open by default
         # Check that the app loaded without errors
@@ -72,7 +76,7 @@ class TestAppWorkflow:
 
     def test_complete_student_event_workflow(self, app_test):
         """Test complete workflow from adding student to event registration."""
-        app_test.run()
+        app_test.run(timeout=TIMEOUT)
 
         # Check that the app has all expected tabs
         assert (

@@ -35,8 +35,8 @@ jobs:
           
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip uv
-        uv pip install --system -e ".[dev]"
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
         
     - name: Code formatting check with Black
       run: python -m black --check --diff .
@@ -96,8 +96,8 @@ jobs:
           
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip uv
-        uv pip install --system -e ".[dev]"
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
         
     - name: Run tests with coverage
       run: |
@@ -145,8 +145,8 @@ jobs:
         
     - name: Install build dependencies
       run: |
-        python -m pip install --upgrade pip uv build twine
-        uv pip install --system -e .
+        python -m pip install --upgrade pip build twine
+        pip install -e .
         
     - name: Build package
       run: python -m build
