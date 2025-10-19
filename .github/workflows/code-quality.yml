@@ -27,40 +27,35 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip uv
-        uv venv
-        source .venv/bin/activate
-        uv pip install -e ".[dev]"
+        uv pip install --system -e ".[dev]"
         
     - name: Run Black formatting check
       run: |
-        source .venv/bin/activate
         python -m black --check --diff . || (echo "Code is not formatted. Run 'black .' to fix." && exit 1)
         
     - name: Run isort import sorting check
       run: |
-        source .venv/bin/activate
         python -m isort --check-only --diff . || (echo "Imports are not sorted. Run 'isort .' to fix." && exit 1)
         
     - name: Run flake8 linting
       run: |
-        source .venv/bin/activate
         python -m flake8 . --statistics --tee --output-file=flake8-report.txt
         
     - name: Run pylint
       run: |
-        pylint **/*.py --output-format=json > pylint-report.json || true
+        python -m pylint **/*.py --output-format=json > pylint-report.json || true
         
     - name: Run mypy type checking
       run: |
-        mypy . --ignore-missing-imports --junit-xml mypy-report.xml || true
+        python -m mypy . --ignore-missing-imports --junit-xml mypy-report.xml || true
         
     - name: Run bandit security linting
       run: |
-        bandit -r . -f json -o bandit-report.json || true
+        python -m bandit -r . -f json -o bandit-report.json || true
         
     - name: Run safety vulnerability check
       run: |
-        safety check --json --output safety-report.json || true
+        python -m safety check --json --output safety-report.json || true
         
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master

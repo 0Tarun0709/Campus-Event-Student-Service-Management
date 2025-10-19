@@ -29,7 +29,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip uv
-        uv pip install -e ".[security]"
+        uv pip install --system -e ".[dev]"
         pip install semgrep
         
     - name: Run Bandit Security Scanner
