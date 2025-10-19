@@ -36,7 +36,7 @@ jobs:
         python -m memory_profiler app.py > memory-profile.txt || true
         
     - name: Upload performance results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: performance-results
