@@ -26,7 +26,7 @@ def _format_conflict_message(other_event_title, conflict_details, venue):
 def _check_event_conflicts(event_id, title, club, date, start_time, end_time, venue):
     """
     Check for scheduling conflicts with existing events.
-    
+
     Args:
         event_id: ID of the event to check
         title: Event title
@@ -35,10 +35,11 @@ def _check_event_conflicts(event_id, title, club, date, start_time, end_time, ve
         start_time: Event start time
         end_time: Event end time
         venue: Event venue
-        
+
     Returns:
         List of conflict descriptions
     """
+
     class TempEvent:
         def __init__(self, event_id, title, club, date, start_time, end_time, venue):
             self.event_id = event_id
@@ -52,7 +53,7 @@ def _check_event_conflicts(event_id, title, club, date, start_time, end_time, ve
         def get_conflict_details(self, other_event):
             if hasattr(st.session_state.system, "get_event_conflict"):
                 return st.session_state.system.get_event_conflict(self, other_event)
-            
+
             # Minimal time and venue conflict check
             conflict = {
                 "has_conflict": False,
@@ -60,17 +61,17 @@ def _check_event_conflicts(event_id, title, club, date, start_time, end_time, ve
                 "time_conflict": False,
                 "conflict_period": {},
             }
-            
+
             if self.venue != other_event.venue or self.date != other_event.date:
                 return conflict
-                
+
             conflict["venue_conflict"] = True
             start1 = datetime.strptime(self.start_time, TIME_FORMAT)
             end1 = datetime.strptime(self.end_time, TIME_FORMAT)
             start2 = datetime.strptime(other_event.start_time, TIME_FORMAT)
             end2 = datetime.strptime(other_event.end_time, TIME_FORMAT)
             overlap = max(start1, start2) < min(end1, end2)
-            
+
             if overlap:
                 conflict["time_conflict"] = True
                 conflict["has_conflict"] = True
@@ -79,25 +80,31 @@ def _check_event_conflicts(event_id, title, club, date, start_time, end_time, ve
                     "start": max(start1, start2).strftime(TIME_FORMAT),
                     "end": min(end1, end2).strftime(TIME_FORMAT),
                 }
-            
-            conflict["has_conflict"] = conflict["venue_conflict"] or conflict["time_conflict"]
+
+            conflict["has_conflict"] = (
+                conflict["venue_conflict"] or conflict["time_conflict"]
+            )
             return conflict
 
     temp_event = TempEvent(event_id, title, club, date, start_time, end_time, venue)
     conflicts_list = []
-    
+
     for other_event in st.session_state.system.events.values():
         if other_event.event_id == event_id:
             continue
-            
+
         conflict_details = temp_event.get_conflict_details(other_event)
         if conflict_details["has_conflict"]:
-            conflicts_list.append(_format_conflict_message(other_event.title, conflict_details, venue))
-    
+            conflicts_list.append(
+                _format_conflict_message(other_event.title, conflict_details, venue)
+            )
+
     return conflicts_list
 
 
-def _add_event_to_system(event_id, title, club, date, start_time, end_time, venue, max_seats):
+def _add_event_to_system(
+    event_id, title, club, date, start_time, end_time, venue, max_seats
+):
     """Add an event to the system."""
     st.session_state.system.add_event(
         event_id=event_id,
@@ -140,13 +147,17 @@ def _render_add_event_form():
         )
 
 
-def _handle_add_event_button(event_id, title, club, date, start_time, end_time, venue, max_seats):
+def _handle_add_event_button(
+    event_id, title, club, date, start_time, end_time, venue, max_seats
+):
     """Handle the Add Event button click."""
     if st.button("Add Event") or st.session_state.add_anyway:
         if st.session_state.add_anyway:
             st.session_state.conflict_warning = False
             st.session_state.add_anyway = False
-            _add_event_to_system(event_id, title, club, date, start_time, end_time, venue, max_seats)
+            _add_event_to_system(
+                event_id, title, club, date, start_time, end_time, venue, max_seats
+            )
             st.success(EVENT_ADDED_MSG)
         else:
             if all([event_id, title, club, venue]):
@@ -158,19 +169,32 @@ def _handle_add_event_button(event_id, title, club, date, start_time, end_time, 
                 else:
                     st.session_state.conflict_warning = False
                     st.session_state.add_anyway = False
-                    _add_event_to_system(event_id, title, club, date, start_time, end_time, venue, max_seats)
+                    _add_event_to_system(
+                        event_id,
+                        title,
+                        club,
+                        date,
+                        start_time,
+                        end_time,
+                        venue,
+                        max_seats,
+                    )
                     st.success(EVENT_ADDED_MSG)
             else:
-                st.error("Please fill in all required fields (Event ID, Title, Club, Venue).")
+                st.error(
+                    "Please fill in all required fields (Event ID, Title, Club, Venue)."
+                )
 
 
-def _handle_conflict_warning(event_id, title, club, date, start_time, end_time, venue, max_seats):
+def _handle_conflict_warning(
+    event_id, title, club, date, start_time, end_time, venue, max_seats
+):
     """Display and handle conflict warning popup."""
     if st.session_state.conflict_warning:
         st.warning("Detected scheduling conflicts with this event:")
         for conflict_text in st.session_state.conflict_warning:
             st.write(f"- {conflict_text}")
-        
+
         col_a, col_b = st.columns(2)
         with col_a:
             if st.button("Change Event"):
@@ -178,7 +202,9 @@ def _handle_conflict_warning(event_id, title, club, date, start_time, end_time, 
         with col_b:
             if st.button("Add Anyway"):
                 st.session_state.add_anyway = True
-                _add_event_to_system(event_id, title, club, date, start_time, end_time, venue, max_seats)
+                _add_event_to_system(
+                    event_id, title, club, date, start_time, end_time, venue, max_seats
+                )
                 st.success(EVENT_ADDED_MSG)
 
 
@@ -197,7 +223,10 @@ def _get_event_conflicts(event):
                     conflict_desc.append(
                         f"Time overlap on {period['date']} between {period['start']} and {period['end']}"
                     )
-                conflicts.append(f"Conflicts with {other_event.title}: " + " AND ".join(conflict_desc))
+                conflicts.append(
+                    f"Conflicts with {other_event.title}: "
+                    + " AND ".join(conflict_desc)
+                )
     return conflicts
 
 
@@ -213,19 +242,23 @@ def _render_events_list():
         summary = event.get_summary()
         conflicts = _get_event_conflicts(event)
 
-        event_data.append({
-            "Event ID": event.event_id,
-            "Title": event.title,
-            "Date": event.date,
-            "Time": f"{event.start_time} - {event.end_time}",
-            "Venue": event.venue,
-            "Available Seats": event.max_seats - summary["seats"]["confirmed"],
-            "Status": summary["status"],
-            "Conflicts": (
-                "\\n".join(conflicts) if summary["status"] == "Invalid Schedule" else "No conflicts"
-            ),
-        })
-    
+        event_data.append(
+            {
+                "Event ID": event.event_id,
+                "Title": event.title,
+                "Date": event.date,
+                "Time": f"{event.start_time} - {event.end_time}",
+                "Venue": event.venue,
+                "Available Seats": event.max_seats - summary["seats"]["confirmed"],
+                "Status": summary["status"],
+                "Conflicts": (
+                    "\\n".join(conflicts)
+                    if summary["status"] == "Invalid Schedule"
+                    else "No conflicts"
+                ),
+            }
+        )
+
     df = pd.DataFrame(event_data)
     st.dataframe(df)
 
@@ -249,12 +282,16 @@ def _render_event_details():
         st.metric("Total Seats", event.max_seats)
     with col2:
         confirmed = sum(
-            1 for reg in event.registrations if reg.status == RegistrationStatus.CONFIRMED
+            1
+            for reg in event.registrations
+            if reg.status == RegistrationStatus.CONFIRMED
         )
         st.metric("Confirmed Registrations", confirmed)
     with col3:
         waitlisted = sum(
-            1 for reg in event.registrations if reg.status == RegistrationStatus.WAITLISTED
+            1
+            for reg in event.registrations
+            if reg.status == RegistrationStatus.WAITLISTED
         )
         st.metric("Waitlisted", waitlisted)
 
@@ -279,7 +316,7 @@ def _render_registration_form():
     """Render the student registration form."""
     st.subheader("Register for Event")
     col1, col2 = st.columns(2)
-    
+
     with col1:
         selected_student = st.selectbox(
             "Select Student",
@@ -330,7 +367,7 @@ def manage_events():
     # Render UI components
     _render_add_event_form()
     _render_events_list()
-    
+
     if st.session_state.system.events:
         _render_event_details()
         _render_registration_form()
