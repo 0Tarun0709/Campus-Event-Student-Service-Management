@@ -11,6 +11,8 @@ The format is:
 
 ### Added
 - Initial changelog file to track repository changes and releases.
+- Comprehensive README enhancements: badges, complete installation guide, testing instructions, documentation links, contributing guidelines, deployment options, architecture overview.
+- MIT License file added to repository.
 
 ### Changed
 - Documentation reorganization: legacy top-level markdown files moved into `docs/legacy-md/`.

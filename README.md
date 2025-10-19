@@ -1,5 +1,13 @@
 # Campus Event & Student Service Management System
 
+[![Tests](https://github.com/0Tarun0709/Campus-Event-Student-Service-Management/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/0Tarun0709/Campus-Event-Student-Service-Management/actions)
+[![Code Quality](https://github.com/0Tarun0709/Campus-Event-Student-Service-Management/actions/workflows/code-quality.yml/badge.svg)](https://github.com/0Tarun0709/Campus-Event-Student-Service-Management/actions)
+[![Documentation](https://github.com/0Tarun0709/Campus-Event-Student-Service-Management/actions/workflows/docs.yml/badge.svg)](https://0tarun0709.github.io/Campus-Event-Student-Service-Management)
+[![Security](https://github.com/0Tarun0709/Campus-Event-Student-Service-Management/actions/workflows/security.yml/badge.svg)](https://github.com/0Tarun0709/Campus-Event-Student-Service-Management/actions)
+
+![Python](https://img.shields.io/badge/python-3.11+-blue.svg)
+![Streamlit](https://img.shields.io/badge/streamlit-1.50+-red.svg)
+
 ## Overview
 This system provides a comprehensive solution for managing campus events and student services. It includes both a web-based interface (Streamlit) for managing student registrations, event scheduling, and service requests.
 
@@ -180,28 +188,59 @@ graph TB
 
 ## Setup and Installation
 
-1. **Environment Setup**
+### Prerequisites
+- Python 3.11+ (project supports 3.13)
+- Git for cloning the repository
+
+### Quick Start
+
+1. **Clone the repository**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Unix/macOS
-   # or
-   .\venv\Scripts\activate  # On Windows
+   git clone https://github.com/0Tarun0709/Campus-Event-Student-Service-Management.git
+   cd Campus-Event-Student-Service-Management
    ```
 
-2. **Install Dependencies**
+2. **Environment Setup**
    ```bash
-   uv pip install -r requirements.txt
+   python -m venv .venv
+   source .venv/bin/activate  # On Unix/macOS
    # or
-   uv synv
+   .\.venv\Scripts\activate  # On Windows
    ```
 
-3. **Running the Applications**
+3. **Install Dependencies**
+   ```bash
+   # Using uv (recommended - faster installation)
+   uv pip install -e ".[dev]"
    
+   # Or using pip
+   pip install -r requirements.txt
    
-   Web Application:
+   # For development dependencies
+   pip install -r requirements-dev.txt
+   ```
+
+4. **Run the Application**
    ```bash
    streamlit run app.py
    ```
+
+5. **Access the Application**
+   Open your browser to `http://localhost:8501`
+
+### Alternative Setup Methods
+
+**Using Make (if available):**
+```bash
+make setup-dev    # Set up development environment
+make run         # Run the application
+make test        # Run tests
+```
+
+**Using the setup script:**
+```bash
+./setup-dev.sh  # Automated development setup
+```
 
 
 ## Project Structure
@@ -271,7 +310,6 @@ Covalence/
 
 ### Analytics and Reporting
 1. Event Analytics
-
    - Venue utilization
    - Capacity analysis
    - Conflict statistics
@@ -281,3 +319,192 @@ Covalence/
    - Category analysis
    - Response time metrics
    - Trend analysis
+
+## Testing
+
+### Running Tests
+```bash
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=. --cov-report=html
+
+# Run specific test categories
+pytest tests/test_system.py        # Core system tests
+pytest tests/test_integration.py   # Streamlit integration tests
+pytest tests/test_main_system.py   # Management system tests
+
+# Run performance benchmarks
+pytest --benchmark-only
+
+# Generate coverage report
+pytest --cov=. --cov-report=html
+open htmlcov/index.html  # View coverage report
+```
+
+### Test Coverage
+The project includes:
+- **Unit tests** for core functionality (models, data handling)
+- **Integration tests** for Streamlit components
+- **System tests** for end-to-end workflows
+- **Performance benchmarks** for critical operations
+- **Security tests** via bandit and safety
+
+### Quality Assurance
+```bash
+# Run all quality checks
+make qa
+
+# Individual tools
+black .           # Code formatting
+isort .          # Import sorting
+flake8 .         # Linting
+mypy .           # Type checking
+pylint **/*.py   # Advanced linting
+bandit -r .      # Security scanning
+safety check     # Dependency vulnerability check
+```
+
+## Documentation
+
+- 📚 **[Full Documentation](https://0tarun0709.github.io/Campus-Event-Student-Service-Management)** - Complete project documentation
+- 🚀 **[Getting Started Guide](docs/getting-started.md)** - Step-by-step setup instructions  
+- 🔧 **[Development Setup](docs/development/setup.md)** - Development environment configuration
+- 📋 **[CI/CD Pipeline](docs/ci-cd/overview.md)** - Continuous integration and deployment
+- 🎯 **[UV Usage Guide](docs/legacy-md/UV-CHEATSHEET.md)** - Fast Python package management
+- 📊 **[API Documentation](docs/api/)** - Code API reference
+
+## Health Monitoring
+
+The application includes built-in health monitoring:
+
+- **Health Check Endpoint**: Access `/healthz` for system status
+- **System Metrics**: CPU, memory, and disk usage monitoring  
+- **Application State**: Component health and connectivity checks
+- **Performance Monitoring**: Response time and throughput metrics
+
+## Environment Variables
+
+Create a `.env` file for local development:
+
+```bash
+# Application Configuration
+STREAMLIT_SERVER_PORT=8501
+STREAMLIT_SERVER_ADDRESS=0.0.0.0
+
+# Development Settings
+DEBUG=True
+LOG_LEVEL=INFO
+
+# Health Check Configuration  
+HEALTH_CHECK_TIMEOUT=30
+```
+
+## Contributing
+
+We welcome contributions! Here's how to get started:
+
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Make your changes**
+   - Follow the existing code style
+   - Add tests for new functionality
+   - Update documentation as needed
+4. **Run quality checks**
+   ```bash
+   make qa          # Run all checks
+   pytest           # Run tests
+   ```
+5. **Commit your changes**
+   ```bash
+   git commit -m 'Add amazing feature'
+   ```
+6. **Push to your branch**
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+7. **Open a Pull Request**
+
+### Development Guidelines
+
+- **Code Style**: Use Black for formatting, follow PEP 8
+- **Testing**: Maintain >80% test coverage
+- **Documentation**: Update docs for any API changes
+- **Security**: Run security scans before submitting
+- **Performance**: Consider impact on application performance
+
+See **[Contributing Guidelines](docs/development/contributing.md)** for detailed information.
+
+## Deployment
+
+### Streamlit Cloud (Recommended)
+1. Connect your GitHub repository to Streamlit Cloud
+2. Set the main file to `app.py`  
+3. Configure environment variables if needed
+4. Deploy automatically on push to main branch
+
+### Docker Deployment
+```bash
+# Build the container
+docker build -t campus-management .
+
+# Run the container  
+docker run -p 8501:8501 campus-management
+
+# Or use Docker Compose
+docker-compose up
+```
+
+### Manual Deployment
+```bash
+# On your server
+git clone <repository-url>
+cd Campus-Event-Student-Service-Management
+pip install -r requirements.txt
+streamlit run app.py --server.port 8501 --server.address 0.0.0.0
+```
+
+## Architecture
+
+The system follows a modular architecture:
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Streamlit UI  │────│  Business Logic  │────│   Data Models   │
+│   (Frontend)    │    │   (Controllers)  │    │   (Backend)     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                        │                        │
+         ▼                        ▼                        ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│  Tab Components │    │ Event Management │    │ Student/Event   │
+│  (dashboard,    │    │ Service Requests │    │ Registration    │
+│   events, etc.) │    │ Analytics Engine │    │ Models          │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+## License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- 📧 **Email**: mushamsaitarun328@gmail.com
+- 🐛 **Issues**: [GitHub Issues](https://github.com/0Tarun0709/Campus-Event-Student-Service-Management/issues)
+- 📖 **Documentation**: [Project Docs](https://0tarun0709.github.io/Campus-Event-Student-Service-Management)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/0Tarun0709/Campus-Event-Student-Service-Management/discussions)
+
+## Acknowledgments
+
+- **Streamlit** - For the amazing web framework
+- **Plotly** - For interactive visualizations
+- **Python Community** - For excellent tooling and libraries
+
+---
+
+**Made with ❤️ for educational institutions**
+
+*Last Updated: October 2025*
